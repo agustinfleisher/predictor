@@ -154,3 +154,4 @@ Notes
 -----
 - The pipeline assumes daily bars; intraday intervals need adjustments to rolling windows.
 - yfinance calls require network access; in offline mode, swap in your own CSV loader and reuse the feature/model modules unchanged.
+# predictor

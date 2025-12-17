@@ -5,6 +5,21 @@ Purpose
 -------
 Build a modular daily stock prediction toolkit with data loading, feature engineering, model factories/ensembles, and walk-forward backtesting, plus an end-to-end example (`main.py`).
 
+How the purpose is fulfilled
+----------------------------
+This project is organized as a small, composable pipeline that turns raw market time series into (1) a predictive signal and (2) a realistic evaluation of that signal using time-series-safe validation.
+
+At a high level the workflow is:
+1) **Load and align data** (`stock_pipeline/data.py`): download OHLCV for one or more tickers, clean/normalize columns, align dates, and optionally merge external series like VIX.
+2) **Describe market regimes** (`stock_pipeline/regimes.py`): label each date with regime features (e.g., VIX level buckets or realized-vol z-score buckets) and optionally one-hot encode them for modeling.
+3) **Engineer predictive features** (`stock_pipeline/features.py`): compute standard technical/seasonality inputs (returns, vol, RSI, Bollinger bands, calendar effects, VIX-derived features) in a way that preserves time ordering.
+4) **Build a modeling dataset** (`stock_pipeline/datasets.py`): define targets (e.g., next-day return or next-day direction), select features, and create train/validation splits that respect chronology to avoid leakage.
+5) **Instantiate models consistently** (`stock_pipeline/base_models.py`, `stock_pipeline/models.py`): provide a registry/factory layer so models can be swapped without changing pipeline code.
+6) **Combine models when helpful** (`stock_pipeline/ensemble.py`): support simple blends (weighted averaging / voting) and regime-aware gating to make the signal more robust than a single estimator.
+7) **Evaluate with walk-forward testing** (`stock_pipeline/backtesting.py`, `stock_pipeline/backtester.py`, `stock_pipeline/metrics.py`): run a fold-by-fold walk-forward loop that retrains over time and simulates a simple trading rule (thresholded entries, transaction costs), returning metrics, an equity curve, and a trade/prediction ledger.
+
+`main.py` stitches these parts together into a runnable reference that demonstrates the intended “happy path” from data → features → model/ensemble → walk-forward backtest → printed summary outputs.
+
 Key files/modules
 -----------------
 - `main.py`: end-to-end script (load prices, add VIX/realized-vol regimes, build features, train simple blend, run walk-forward backtest, print metrics/equity/trades head).

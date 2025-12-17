@@ -27,7 +27,7 @@ What’s been done
 - Implemented all modules above and wired `__init__.py`.
 - Added `main.py` demonstrating end-to-end workflow with console summaries and basic error handling for missing data.
 - Installed dependencies via `requirements.txt` in `/Users/ag/stock_pipeline` and via venv in `/Users/ag/predictor`.
-- Initialized git repo in `/Users/ag/stock_pipeline`, committed README (multiple commits). Remote set to `https://github.com/agustinfleisher/predictor.git`.
+- Initialized git repo in `/Users/ag/stock_pipeline` and committed the full project. Remote currently set to `git@github.com:agustinfleisher/predictor.git`.
 - Debugged and fixed multiple pipeline blockers:
   - yfinance MultiIndex output handling is now robust (handles both `(ticker, field)` and `(field, ticker)` column layouts).
   - VIX merge now drops duplicate dates before reindexing to avoid `ValueError: cannot reindex on an axis with duplicate labels`.
@@ -38,19 +38,17 @@ Known issues / blockers
 -----------------------
 - In this Codex CLI sandbox, outbound network/DNS may be blocked unless commands are run with “escalated permissions”. Symptoms looked like DNS failures (e.g., `Could not resolve host: github.com` / `guce.yahoo.com`).
 - When network access is allowed, `main.py` runs end-to-end and downloads data via yfinance successfully.
-- `git push` over HTTPS requires authentication (GitHub username + Personal Access Token, or switch to SSH). Non-interactive pushes can fail with `could not read Username... terminal prompts disabled` if prompts are blocked.
-- Git status note: currently only `README.md` is committed; most code files are still untracked. Run `git status` and commit the full project before pushing.
+- `git push` requires authentication:
+  - HTTPS: needs GitHub username + Personal Access Token (PAT); non-interactive pushes can fail with `could not read Username... terminal prompts disabled`.
+  - SSH: requires your public key to be added to GitHub; otherwise you’ll see `Permission denied (publickey)`.
+- Repo status note: project is committed locally; remaining step is configuring GitHub auth and pushing.
 
 Next steps
 ----------
-1) Commit the full project (right now only `README.md` was committed in the initial steps):
-   - `cd /Users/ag/stock_pipeline && git status`
-   - `git add . && git commit -m "Add pipeline code"`
-2) Push to GitHub (after DNS/network works in your terminal and you have auth set up):
-   - HTTPS: `git push -u origin main` (use a GitHub Personal Access Token when prompted)
-   - or SSH: `git remote set-url origin git@github.com:agustinfleisher/predictor.git` then `git push -u origin main`
-3) Add a `.gitignore` before committing (recommended): ignore `.DS_Store`, `__pycache__/`, `.venv/`, `*.pyc`, etc.
-4) If you want to run fully offline, add a CSV loader and point `main.py` at local OHLCV CSVs (the feature/backtest pipeline is already modular for that).
+1) Push to GitHub (after DNS/network works in your terminal and you have auth set up):
+   - SSH (current remote): add `~/.ssh/id_ed25519.pub` to GitHub, then `git push -u origin main`
+   - or HTTPS: `git remote set-url origin https://github.com/agustinfleisher/predictor.git` then `git push -u origin main` (use a PAT when prompted)
+2) If you want to run fully offline, add a CSV loader and point `main.py` at local OHLCV CSVs (the feature/backtest pipeline is already modular for that).
 
 How to run (with network)
 -------------------------

@@ -5,6 +5,19 @@ Purpose
 -------
 Build a modular daily stock prediction toolkit with data loading, feature engineering, model factories/ensembles, and walk-forward backtesting, plus an end-to-end example (`main.py`).
 
+Plain-language summary (investing-level)
+---------------------------------------
+This project is a “research sandbox” for testing a simple idea: **can yesterday’s market information help decide whether to take risk tomorrow?**
+
+In plain terms it:
+- Downloads historical daily prices (and optional market-volatility data like VIX).
+- Turns those prices into common “signals” investors talk about (trend, momentum, volatility, etc.).
+- Trains basic machine-learning models to estimate the next day’s return/direction.
+- Converts that estimate into a simple trading decision (e.g., be in the stock when the signal is strong, stay out otherwise), including transaction costs.
+- Tests the whole process in a realistic way by repeatedly “rewinding time” (walk-forward testing) so the model only uses information that would have been available at that date.
+
+The point is not to promise profits; it’s to **measure** whether a repeatable, rules-based approach would have held up historically without “peeking into the future”.
+
 How the purpose is fulfilled
 ----------------------------
 This project is organized as a small, composable pipeline that turns raw market time series into (1) a predictive signal and (2) a realistic evaluation of that signal using time-series-safe validation.

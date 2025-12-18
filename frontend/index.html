@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stockpredictor</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="hero">
+    <div>
+      <p class="eyebrow">Stockpredictor</p>
+      <h1>Run the pipeline from your browser</h1>
+      <p class="lede">Sign up, log in, submit a backtest, and review the equity curve, metrics, and trades.</p>
+    </div>
+    <div class="status" id="status">Ready.</div>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>Auth</h2>
+      <div class="form-row">
+        <label>Email</label>
+        <input id="email" type="email" placeholder="you@example.com" />
+      </div>
+      <div class="form-row">
+        <label>Password</label>
+        <input id="password" type="password" placeholder="••••••••" />
+      </div>
+      <div class="actions">
+        <button id="signup">Sign up</button>
+        <button id="login" class="secondary">Log in</button>
+        <span id="tokenStatus" class="pill">Not authenticated</span>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Submit a job</h2>
+      <div class="grid">
+        <div class="form-row">
+          <label>Tickers (comma separated)</label>
+          <input id="tickers" type="text" value="AAPL,MSFT" />
+        </div>
+        <div class="form-row">
+          <label>Start date</label>
+          <input id="start" type="date" />
+        </div>
+        <div class="form-row">
+          <label>End date</label>
+          <input id="end" type="date" />
+        </div>
+        <div class="form-row">
+          <label>Task</label>
+          <select id="task">
+            <option value="classification">classification</option>
+            <option value="regression">regression</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Model</label>
+          <select id="model_kind">
+            <option value="random_forest">random_forest</option>
+            <option value="logistic">logistic</option>
+            <option value="gboost">gboost</option>
+            <option value="mlp">mlp</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Horizon (days)</label>
+          <input id="horizon" type="number" value="1" min="1" />
+        </div>
+        <div class="form-row">
+          <label>Entry threshold</label>
+          <input id="entry_threshold" type="number" value="0.05" step="0.01" />
+        </div>
+      </div>
+      <button id="submitJob">Run backtest</button>
+      <div id="jobId" class="pill muted"></div>
+    </section>
+
+    <section class="card">
+      <div class="section-header">
+        <h2>Job results</h2>
+        <div>
+          <button id="refreshJobs" class="secondary">Refresh jobs</button>
+        </div>
+      </div>
+      <div class="results">
+        <div class="result-block">
+          <h3>Summary metrics</h3>
+          <pre id="summary"></pre>
+        </div>
+        <div class="result-block">
+          <h3>Equity curve (first points)</h3>
+          <pre id="equity"></pre>
+        </div>
+        <div class="result-block">
+          <h3>Trades head</h3>
+          <pre id="trades"></pre>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

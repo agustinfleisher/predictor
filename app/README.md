@@ -39,3 +39,20 @@ Notes and limits
 - Guardrails: max tickers = 5, max date span = 5 years (configurable via env vars).
 - Data source: yfinance (live) only for now; CSV uploads can be added later.
 - Tokens use a dev default secret; set `APP_SECRET_KEY` in production.
+- CORS is open (`*`) for local development. For production, restrict origins.
+
+Frontend (simple static)
+------------------------
+- A lightweight HTML/JS frontend lives in `frontend/`.
+- Start the API (separate terminal):
+  ```bash
+  cd /Users/ag/stock_pipeline
+  uvicorn app.main:app --host 127.0.0.1 --port 8000
+  ```
+- Serve the frontend (another terminal):
+  ```bash
+  cd /Users/ag/stock_pipeline/frontend
+  python3 -m http.server 5173
+  ```
+  Then open http://127.0.0.1:5173 in your browser.
+- Flow in the UI: sign up or log in, then submit a job (tickers/dates), then view results (summary, equity curve head, trades head).

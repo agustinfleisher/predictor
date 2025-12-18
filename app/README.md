@@ -12,8 +12,10 @@ uvicorn app.main:app --reload
 
 Auth flow
 ---------
-- Sign up: `POST /auth/signup` with `{ "email": "...", "password": "..." }` → returns bearer token.
-- Login: `POST /auth/login` → returns bearer token.
+- Sign up: `POST /auth/signup` with `{ "username": "...", "email": "...", "password": "..." }` → returns bearer token.
+- Login: `POST /auth/login` with `{ "identifier": "<username or email>", "password": "..." }` → returns bearer token.
+- Forgot password: `POST /auth/forgot_password` with `{ "identifier": "<username or email>" }` (sends a reset token via SMTP if configured; otherwise logs token to stdout).
+- Reset password: `POST /auth/reset_password` with `{ "token": "...", "new_password": "..." }`.
 - Use the token in `Authorization: Bearer <token>` for job endpoints.
 
 Job flow (sync)
@@ -40,6 +42,7 @@ Notes and limits
 - Data source: yfinance (live) only for now; CSV uploads can be added later.
 - Tokens use a dev default secret; set `APP_SECRET_KEY` in production.
 - CORS is open (`*`) for local development. For production, restrict origins.
+- Optional SMTP: set `APP_SMTP_HOST`, `APP_SMTP_PORT`, `APP_SMTP_USERNAME`, `APP_SMTP_PASSWORD`, `APP_SMTP_FROM` to send real reset emails; otherwise tokens are logged to stdout.
 
 Frontend (simple static)
 ------------------------

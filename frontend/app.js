@@ -2,23 +2,39 @@ const API_BASE = "http://127.0.0.1:8000";
 
 let accessToken = null;
 let lastJobId = null;
+let currentUser = null;
 
 const statusEl = document.getElementById("status");
-const tokenStatusEl = document.getElementById("tokenStatus");
+const accountDisplayEl = document.getElementById("accountDisplay");
 const jobIdEl = document.getElementById("jobId");
 const summaryEl = document.getElementById("summary");
 const equityEl = document.getElementById("equity");
 const tradesEl = document.getElementById("trades");
+
+const tabSignup = document.getElementById("tabSignup");
+const tabLogin = document.getElementById("tabLogin");
+const tabForgot = document.getElementById("tabForgot");
+const signupForm = document.getElementById("signupForm");
+const loginForm = document.getElementById("loginForm");
+const forgotForm = document.getElementById("forgotForm");
+const openSignupBtn = document.getElementById("openSignup");
+const openLoginBtn = document.getElementById("openLogin");
 
 function setStatus(msg, type = "info") {
   statusEl.textContent = msg;
   statusEl.style.color = type === "error" ? "#f87171" : "#4ade80";
 }
 
-function setToken(token) {
+function setToken(token, user = null) {
   accessToken = token;
-  tokenStatusEl.textContent = token ? "Authenticated" : "Not authenticated";
-  tokenStatusEl.style.color = token ? "#4ade80" : "#94a3b8";
+  currentUser = user;
+  if (token && user) {
+    accountDisplayEl.textContent = user.username || user.email || "Account";
+    accountDisplayEl.classList.remove("muted");
+  } else {
+    accountDisplayEl.textContent = "Not signed in";
+    accountDisplayEl.classList.add("muted");
+  }
 }
 
 async function api(path, opts = {}) {
@@ -45,18 +61,19 @@ async function api(path, opts = {}) {
 }
 
 async function signup() {
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
-  if (!email || !password) {
-    setStatus("Email and password required.", "error");
+  const username = document.getElementById("su_username").value.trim();
+  const email = document.getElementById("su_email").value.trim();
+  const password = document.getElementById("su_password").value;
+  if (!username || !email || !password) {
+    setStatus("Username, email, and password required.", "error");
     return;
   }
   try {
     const data = await api("/auth/signup", {
       method: "POST",
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ username, email, password }),
     });
-    setToken(data.access_token);
+    setToken(data.access_token, { username, email });
     setStatus("Signed up and logged in.");
   } catch (err) {
     setStatus(err.message, "error");
@@ -64,19 +81,36 @@ async function signup() {
 }
 
 async function login() {
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
-  if (!email || !password) {
-    setStatus("Email and password required.", "error");
+  const identifier = document.getElementById("li_identifier").value.trim();
+  const password = document.getElementById("li_password").value;
+  if (!identifier || !password) {
+    setStatus("Username/email and password required.", "error");
     return;
   }
   try {
     const data = await api("/auth/login", {
       method: "POST",
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ identifier, password }),
     });
-    setToken(data.access_token);
+    setToken(data.access_token, { username: identifier, email: identifier });
     setStatus("Logged in.");
+  } catch (err) {
+    setStatus(err.message, "error");
+  }
+}
+
+async function forgotPassword() {
+  const identifier = document.getElementById("fp_identifier").value.trim();
+  if (!identifier) {
+    setStatus("Username or email required.", "error");
+    return;
+  }
+  try {
+    await api("/auth/forgot_password", {
+      method: "POST",
+      body: JSON.stringify({ identifier }),
+    });
+    setStatus("If the account exists, a reset token was sent.");
   } catch (err) {
     setStatus(err.message, "error");
   }
@@ -169,9 +203,26 @@ async function fetchJobDetail(jobId) {
 
 document.getElementById("signup").addEventListener("click", signup);
 document.getElementById("login").addEventListener("click", login);
+document.getElementById("forgot").addEventListener("click", forgotPassword);
 document.getElementById("submitJob").addEventListener("click", submitJob);
 document.getElementById("refreshJobs").addEventListener("click", fetchJobs);
 
+openSignupBtn.addEventListener("click", () => activateTab("signup"));
+openLoginBtn.addEventListener("click", () => activateTab("login"));
+tabSignup.addEventListener("click", () => activateTab("signup"));
+tabLogin.addEventListener("click", () => activateTab("login"));
+tabForgot.addEventListener("click", () => activateTab("forgot"));
+
+function activateTab(name) {
+  tabSignup.classList.toggle("active", name === "signup");
+  tabLogin.classList.toggle("active", name === "login");
+  tabForgot.classList.toggle("active", name === "forgot");
+  signupForm.classList.toggle("hidden", name !== "signup");
+  loginForm.classList.toggle("hidden", name !== "login");
+  forgotForm.classList.toggle("hidden", name !== "forgot");
+}
+
 defaultDates();
-setToken(null);
+setToken(null, null);
 setStatus("Ready.");
+activateTab("signup");

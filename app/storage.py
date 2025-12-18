@@ -18,6 +18,9 @@ def _now_iso() -> str:
 
 
 def init_db(settings: Settings) -> None:
+    """
+    Initialize tables and apply lightweight migrations (add username, reset tokens).
+    """
     db_path = resolve_db_path(settings)
     conn = sqlite3.connect(db_path)
     try:
@@ -26,6 +29,7 @@ def init_db(settings: Settings) -> None:
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 email TEXT UNIQUE NOT NULL,
+                username TEXT UNIQUE,
                 password_hash TEXT NOT NULL,
                 created_at TEXT NOT NULL
             );
@@ -46,7 +50,24 @@ def init_db(settings: Settings) -> None:
             );
         """
         )
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS password_reset_tokens (
+                token TEXT PRIMARY KEY,
+                user_id INTEGER NOT NULL,
+                expires_at TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                FOREIGN KEY(user_id) REFERENCES users(id)
+            );
+        """
+        )
         conn.commit()
+
+        # Lightweight migration: add username column if missing.
+        cols = [row[1] for row in conn.execute("PRAGMA table_info(users);").fetchall()]
+        if "username" not in cols:
+            conn.execute("ALTER TABLE users ADD COLUMN username TEXT UNIQUE;")
+            conn.commit()
     finally:
         conn.close()
 
@@ -62,11 +83,11 @@ def get_conn(settings: Settings):
         conn.close()
 
 
-def create_user(settings: Settings, email: str, password_hash: str) -> int:
+def create_user(settings: Settings, email: str, username: str, password_hash: str) -> int:
     with get_conn(settings) as conn:
         cur = conn.execute(
-            "INSERT INTO users (email, password_hash, created_at) VALUES (?, ?, ?)",
-            (email, password_hash, _now_iso()),
+            "INSERT INTO users (email, username, password_hash, created_at) VALUES (?, ?, ?, ?)",
+            (email, username, password_hash, _now_iso()),
         )
         conn.commit()
         return cur.lastrowid
@@ -79,11 +100,27 @@ def get_user_by_email(settings: Settings, email: str) -> Optional[Dict[str, Any]
         return dict(row) if row else None
 
 
+def get_user_by_username(settings: Settings, username: str) -> Optional[Dict[str, Any]]:
+    with get_conn(settings) as conn:
+        cur = conn.execute("SELECT * FROM users WHERE username = ?", (username,))
+        row = cur.fetchone()
+        return dict(row) if row else None
+
+
 def get_user_by_id(settings: Settings, user_id: int) -> Optional[Dict[str, Any]]:
     with get_conn(settings) as conn:
         cur = conn.execute("SELECT * FROM users WHERE id = ?", (user_id,))
         row = cur.fetchone()
         return dict(row) if row else None
+
+
+def update_user_password(settings: Settings, user_id: int, password_hash: str) -> None:
+    with get_conn(settings) as conn:
+        conn.execute(
+            "UPDATE users SET password_hash = ? WHERE id = ?",
+            (password_hash, user_id),
+        )
+        conn.commit()
 
 
 def create_job(settings: Settings, job_id: str, user_id: int, request_json: dict) -> None:
@@ -149,3 +186,28 @@ def list_jobs(settings: Settings, user_id: int, limit: int = 20) -> Iterable[Dic
         )
         for row in cur.fetchall():
             yield dict(row)
+
+
+def create_reset_token(settings: Settings, token: str, user_id: int, expires_at: str) -> None:
+    with get_conn(settings) as conn:
+        conn.execute(
+            """
+            INSERT INTO password_reset_tokens (token, user_id, expires_at, created_at)
+            VALUES (?, ?, ?, ?)
+            """,
+            (token, user_id, expires_at, _now_iso()),
+        )
+        conn.commit()
+
+
+def get_reset_token(settings: Settings, token: str) -> Optional[Dict[str, Any]]:
+    with get_conn(settings) as conn:
+        cur = conn.execute("SELECT * FROM password_reset_tokens WHERE token = ?", (token,))
+        row = cur.fetchone()
+        return dict(row) if row else None
+
+
+def delete_reset_token(settings: Settings, token: str) -> None:
+    with get_conn(settings) as conn:
+        conn.execute("DELETE FROM password_reset_tokens WHERE token = ?", (token,))
+        conn.commit()

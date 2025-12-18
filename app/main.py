@@ -27,7 +27,7 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
-    @app.get("/health")
+    @app.get("/health", include_in_schema=False)
     def health():
         return {"status": "ok"}
 

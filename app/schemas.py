@@ -15,12 +15,22 @@ Task = Literal["classification", "regression"]
 
 class UserCreate(BaseModel):
     email: EmailStr
+    username: str = Field(min_length=3, max_length=50)
     password: str = Field(min_length=6, max_length=128)
 
 
 class UserLogin(BaseModel):
-    email: EmailStr
+    identifier: str
     password: str
+
+
+class ForgotPassword(BaseModel):
+    identifier: str
+
+
+class ResetPassword(BaseModel):
+    token: str
+    new_password: str = Field(min_length=6, max_length=128)
 
 
 class TokenResponse(BaseModel):

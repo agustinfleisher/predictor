@@ -20,6 +20,14 @@ class Settings(BaseSettings):
     max_days: int = Field(default=365 * 5, env="APP_MAX_DAYS")
     max_upload_rows: int = Field(default=20000, env="APP_MAX_UPLOAD_ROWS")
 
+    # Optional SMTP settings for password reset emails.
+    smtp_host: str | None = Field(default=None, env="APP_SMTP_HOST")
+    smtp_port: int | None = Field(default=None, env="APP_SMTP_PORT")
+    smtp_username: str | None = Field(default=None, env="APP_SMTP_USERNAME")
+    smtp_password: str | None = Field(default=None, env="APP_SMTP_PASSWORD")
+    smtp_from: str | None = Field(default=None, env="APP_SMTP_FROM")
+    reset_token_minutes: int = Field(default=30, env="APP_RESET_TOKEN_MIN")
+
     class Config:
         env_file = ".env"
 

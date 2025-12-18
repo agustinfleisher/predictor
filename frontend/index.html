@@ -13,24 +13,66 @@
       <h1>Run the pipeline from your browser</h1>
       <p class="lede">Sign up, log in, submit a backtest, and review the equity curve, metrics, and trades.</p>
     </div>
-    <div class="status" id="status">Ready.</div>
+    <div class="account">
+      <span id="accountDisplay" class="pill muted">Not signed in</span>
+      <div class="account-actions">
+        <button id="openSignup" class="secondary">Sign up</button>
+        <button id="openLogin">Log in</button>
+      </div>
+    </div>
   </header>
 
+  <section class="status-bar" id="status">Ready.</section>
+
   <main>
-    <section class="card">
-      <h2>Auth</h2>
-      <div class="form-row">
-        <label>Email</label>
-        <input id="email" type="email" placeholder="you@example.com" />
+    <section class="card auth-card" id="authPanel">
+      <div class="tabs">
+        <button id="tabSignup" class="active">Sign up</button>
+        <button id="tabLogin" class="secondary">Log in</button>
+        <button id="tabForgot" class="secondary">Forgot password</button>
       </div>
-      <div class="form-row">
-        <label>Password</label>
-        <input id="password" type="password" placeholder="••••••••" />
+
+      <div class="auth-form" id="signupForm">
+        <div class="form-row">
+          <label>Username</label>
+          <input id="su_username" type="text" placeholder="yourname" />
+        </div>
+        <div class="form-row">
+          <label>Email</label>
+          <input id="su_email" type="email" placeholder="you@example.com" />
+        </div>
+        <div class="form-row">
+          <label>Password</label>
+          <input id="su_password" type="password" placeholder="••••••••" />
+        </div>
+        <div class="actions">
+          <button id="signup">Create account</button>
+        </div>
       </div>
-      <div class="actions">
-        <button id="signup">Sign up</button>
-        <button id="login" class="secondary">Log in</button>
-        <span id="tokenStatus" class="pill">Not authenticated</span>
+
+      <div class="auth-form hidden" id="loginForm">
+        <div class="form-row">
+          <label>Username or Email</label>
+          <input id="li_identifier" type="text" placeholder="yourname or you@example.com" />
+        </div>
+        <div class="form-row">
+          <label>Password</label>
+          <input id="li_password" type="password" placeholder="••••••••" />
+        </div>
+        <div class="actions">
+          <button id="login">Log in</button>
+        </div>
+      </div>
+
+      <div class="auth-form hidden" id="forgotForm">
+        <div class="form-row">
+          <label>Username or Email</label>
+          <input id="fp_identifier" type="text" placeholder="yourname or you@example.com" />
+        </div>
+        <p class="muted-text">We’ll email a reset token if the account exists.</p>
+        <div class="actions">
+          <button id="forgot">Send reset</button>
+        </div>
       </div>
     </section>
 

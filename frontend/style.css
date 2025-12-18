@@ -19,6 +19,9 @@ body {
   color: var(--text);
   padding: 0 1.5rem 2rem;
 }
+.hidden {
+  display: none !important;
+}
 h1, h2, h3 { margin: 0; }
 p { margin: 0; }
 

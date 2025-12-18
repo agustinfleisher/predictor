@@ -24,6 +24,8 @@ const resultsSection = document.getElementById("resultsSection");
 const authGate = document.getElementById("authGate");
 const submitBtn = document.getElementById("submitJob");
 const refreshBtn = document.getElementById("refreshJobs");
+const appShell = document.getElementById("appShell");
+const authOverlay = document.getElementById("authOverlay");
 
 function setStatus(msg, type = "info") {
   statusEl.textContent = msg;
@@ -230,12 +232,16 @@ function activateTab(name) {
 
 function toggleAuthState(isAuthed) {
   if (isAuthed) {
+    authOverlay.classList.add("hidden");
+    appShell.classList.remove("hidden");
     jobSection.classList.remove("locked");
     resultsSection.classList.remove("locked");
     submitBtn.disabled = false;
     refreshBtn.disabled = false;
     authGate.classList.add("hidden");
   } else {
+    authOverlay.classList.remove("hidden");
+    appShell.classList.add("hidden");
     jobSection.classList.add("locked");
     resultsSection.classList.add("locked");
     submitBtn.disabled = true;

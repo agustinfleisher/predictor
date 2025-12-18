@@ -7,24 +7,7 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header class="hero">
-    <div>
-      <p class="eyebrow">Stockpredictor</p>
-      <h1>Run the pipeline from your browser</h1>
-      <p class="lede">Sign up, log in, submit a backtest, and review the equity curve, metrics, and trades.</p>
-    </div>
-    <div class="account">
-      <span id="accountDisplay" class="pill muted">Not signed in</span>
-      <div class="account-actions">
-        <button id="openSignup" class="secondary">Sign up</button>
-        <button id="openLogin">Log in</button>
-      </div>
-    </div>
-  </header>
-
-  <section class="status-bar" id="status">Ready.</section>
-
-  <main>
+  <div id="authOverlay" class="auth-overlay">
     <section class="card auth-card" id="authPanel">
       <div class="tabs">
         <button id="tabSignup" class="active">Sign up</button>
@@ -75,7 +58,27 @@
         </div>
       </div>
     </section>
+  </div>
 
+  <div id="appShell" class="app-shell hidden">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Stockpredictor</p>
+        <h1>Run the pipeline from your browser</h1>
+        <p class="lede">Sign up, log in, submit a backtest, and review the equity curve, metrics, and trades.</p>
+      </div>
+      <div class="account">
+        <span id="accountDisplay" class="pill muted">Not signed in</span>
+        <div class="account-actions">
+          <button id="openSignup" class="secondary">Sign up</button>
+          <button id="openLogin">Log in</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="status-bar" id="status">Ready.</section>
+
+    <main>
     <section class="card locked" id="jobSection">
       <div id="authGate" class="gate">
         Log in or create an account to submit jobs.
@@ -146,6 +149,7 @@
       </div>
     </section>
   </main>
+  </div>
 
   <script src="app.js"></script>
 </body>

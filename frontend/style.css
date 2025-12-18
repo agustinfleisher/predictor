@@ -85,6 +85,26 @@ main {
   margin: 0 auto;
 }
 
+.app-shell.hidden {
+  display: none;
+}
+
+.auth-overlay {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 20% 20%, rgba(124, 58, 237, 0.12), transparent 35%),
+              radial-gradient(circle at 80% 10%, rgba(74, 222, 128, 0.14), transparent 30%),
+              #0b1220;
+  z-index: 10;
+  padding: 1rem;
+}
+
+.auth-overlay .auth-card {
+  width: min(480px, 100%);
+}
+
 .card {
   background: var(--panel);
   border: 1px solid var(--border);

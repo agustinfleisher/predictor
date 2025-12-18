@@ -14,9 +14,11 @@ const tradesEl = document.getElementById("trades");
 const tabSignup = document.getElementById("tabSignup");
 const tabLogin = document.getElementById("tabLogin");
 const tabForgot = document.getElementById("tabForgot");
-const signupForm = document.getElementById("signupForm");
-const loginForm = document.getElementById("loginForm");
-const forgotForm = document.getElementById("forgotForm");
+const forms = {
+  signup: document.getElementById("signupForm"),
+  login: document.getElementById("loginForm"),
+  forgot: document.getElementById("forgotForm"),
+};
 const openSignupBtn = document.getElementById("openSignup");
 const openLoginBtn = document.getElementById("openLogin");
 const jobSection = document.getElementById("jobSection");
@@ -225,9 +227,13 @@ function activateTab(name) {
   tabSignup.classList.toggle("active", name === "signup");
   tabLogin.classList.toggle("active", name === "login");
   tabForgot.classList.toggle("active", name === "forgot");
-  signupForm.classList.toggle("hidden", name !== "signup");
-  loginForm.classList.toggle("hidden", name !== "login");
-  forgotForm.classList.toggle("hidden", name !== "forgot");
+  Object.entries(forms).forEach(([key, el]) => {
+    if (name === key) {
+      el.classList.add("active");
+    } else {
+      el.classList.remove("active");
+    }
+  });
 }
 
 function toggleAuthState(isAuthed) {

@@ -76,7 +76,10 @@
       </div>
     </section>
 
-    <section class="card">
+    <section class="card locked" id="jobSection">
+      <div id="authGate" class="gate">
+        Log in or create an account to submit jobs.
+      </div>
       <h2>Submit a job</h2>
       <div class="grid">
         <div class="form-row">
@@ -116,15 +119,15 @@
           <input id="entry_threshold" type="number" value="0.05" step="0.01" />
         </div>
       </div>
-      <button id="submitJob">Run backtest</button>
+      <button id="submitJob" disabled>Run backtest</button>
       <div id="jobId" class="pill muted"></div>
     </section>
 
-    <section class="card">
+    <section class="card locked" id="resultsSection">
       <div class="section-header">
         <h2>Job results</h2>
         <div>
-          <button id="refreshJobs" class="secondary">Refresh jobs</button>
+          <button id="refreshJobs" class="secondary" disabled>Refresh jobs</button>
         </div>
       </div>
       <div class="results">

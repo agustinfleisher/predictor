@@ -39,6 +39,14 @@ p { margin: 0; }
   display: flex;
   gap: 0.5rem;
 }
+.gate {
+  background: #1e293b;
+  border: 1px dashed var(--border);
+  color: var(--muted);
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.7rem;
+  margin-bottom: 0.65rem;
+}
 .eyebrow {
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -153,6 +161,10 @@ button:disabled {
 }
 .pill.muted { color: var(--muted); }
 .muted-text { color: var(--muted); font-size: 0.9rem; }
+.locked {
+  opacity: 0.55;
+  pointer-events: none;
+}
 
 .grid {
   display: grid;

@@ -19,6 +19,11 @@ const loginForm = document.getElementById("loginForm");
 const forgotForm = document.getElementById("forgotForm");
 const openSignupBtn = document.getElementById("openSignup");
 const openLoginBtn = document.getElementById("openLogin");
+const jobSection = document.getElementById("jobSection");
+const resultsSection = document.getElementById("resultsSection");
+const authGate = document.getElementById("authGate");
+const submitBtn = document.getElementById("submitJob");
+const refreshBtn = document.getElementById("refreshJobs");
 
 function setStatus(msg, type = "info") {
   statusEl.textContent = msg;
@@ -35,6 +40,7 @@ function setToken(token, user = null) {
     accountDisplayEl.textContent = "Not signed in";
     accountDisplayEl.classList.add("muted");
   }
+  toggleAuthState(!!token);
 }
 
 async function api(path, opts = {}) {
@@ -220,6 +226,22 @@ function activateTab(name) {
   signupForm.classList.toggle("hidden", name !== "signup");
   loginForm.classList.toggle("hidden", name !== "login");
   forgotForm.classList.toggle("hidden", name !== "forgot");
+}
+
+function toggleAuthState(isAuthed) {
+  if (isAuthed) {
+    jobSection.classList.remove("locked");
+    resultsSection.classList.remove("locked");
+    submitBtn.disabled = false;
+    refreshBtn.disabled = false;
+    authGate.classList.add("hidden");
+  } else {
+    jobSection.classList.add("locked");
+    resultsSection.classList.add("locked");
+    submitBtn.disabled = true;
+    refreshBtn.disabled = true;
+    authGate.classList.remove("hidden");
+  }
 }
 
 defaultDates();

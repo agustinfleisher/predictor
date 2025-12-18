@@ -244,11 +244,22 @@ pre {
   margin-bottom: 1rem;
 }
 .tabs button.active {
-  background: linear-gradient(90deg, var(--accent), #22c55e);
-  color: #0b0f1a;
+  background: #1e293b;
+  color: var(--text);
+  border: 1px solid var(--border);
 }
 .tabs button.secondary {
   background: #1e293b;
   color: var(--text);
   border: 1px solid var(--border);
+}
+
+.auth-card button {
+  background: #1e293b;
+  color: var(--text);
+  border: 1px solid var(--border);
+  font-weight: 600;
+}
+.auth-card button:hover {
+  background: #273449;
 }

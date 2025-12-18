@@ -29,7 +29,7 @@ def init_db(settings: Settings) -> None:
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 email TEXT UNIQUE NOT NULL,
-                username TEXT UNIQUE,
+                username TEXT,
                 password_hash TEXT NOT NULL,
                 created_at TEXT NOT NULL
             );
@@ -66,8 +66,12 @@ def init_db(settings: Settings) -> None:
         # Lightweight migration: add username column if missing.
         cols = [row[1] for row in conn.execute("PRAGMA table_info(users);").fetchall()]
         if "username" not in cols:
-            conn.execute("ALTER TABLE users ADD COLUMN username TEXT UNIQUE;")
+            conn.execute("ALTER TABLE users ADD COLUMN username TEXT;")
             conn.commit()
+
+        # Ensure unique index on username (SQLite allows multiple NULLs).
+        conn.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_users_username ON users(username);")
+        conn.commit()
     finally:
         conn.close()
 

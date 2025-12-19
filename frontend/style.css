@@ -217,6 +217,38 @@ button:disabled {
   padding: 0.75rem;
 }
 
+.bot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+.bot-card {
+  background: #0f172a;
+  border: 1px solid var(--border);
+  border-radius: 0.9rem;
+  padding: 0.75rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.1s ease;
+}
+.bot-card:hover {
+  border-color: var(--accent);
+  background: #15213a;
+  transform: translateY(-2px);
+}
+.bot-card.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px rgba(74, 222, 128, 0.3);
+}
+.bot-name {
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+.bot-desc {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
 pre {
   background: transparent;
   color: var(--muted);

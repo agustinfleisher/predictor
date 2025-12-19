@@ -66,7 +66,7 @@
       <div>
         <p class="eyebrow">Stockpredictor</p>
         <h1>Run the pipeline from your browser</h1>
-        <p class="lede">Sign up, log in, submit a backtest, and review the equity curve, metrics, and trades.</p>
+        <p class="lede">Pick a persona, choose a ticker, and submit a backtest. Results show equity, trades, and metrics.</p>
       </div>
       <div class="account">
         <span id="accountDisplay" class="pill muted">Not signed in</span>
@@ -80,6 +80,14 @@
     <section class="status-bar" id="status">Ready.</section>
 
     <main>
+    <section class="card" id="botPicker">
+      <div class="section-header">
+        <h2>Choose your engine</h2>
+        <span id="selectedBot" class="pill muted">None selected</span>
+      </div>
+      <div id="botGrid" class="bot-grid"></div>
+    </section>
+
     <section class="card locked" id="jobSection">
       <div id="authGate" class="gate">
         Log in or create an account to submit jobs.
@@ -87,8 +95,9 @@
       <h2>Submit a job</h2>
       <div class="grid">
         <div class="form-row">
-          <label>Tickers (comma separated)</label>
-          <input id="tickers" type="text" value="AAPL,MSFT" />
+          <label>Ticker</label>
+          <select id="tickerSelect"></select>
+          <input id="tickerCustom" type="text" placeholder="Or enter a ticker" />
         </div>
         <div class="form-row">
           <label>Start date</label>

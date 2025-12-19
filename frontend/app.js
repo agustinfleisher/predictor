@@ -3,6 +3,7 @@ const API_BASE = "http://127.0.0.1:8000";
 let accessToken = null;
 let lastJobId = null;
 let currentUser = null;
+let selectedBot = null;
 
 const statusEl = document.getElementById("status");
 const accountDisplayEl = document.getElementById("accountDisplay");
@@ -11,6 +12,7 @@ const summaryEl = document.getElementById("summary");
 const equityEl = document.getElementById("equity");
 const tradesEl = document.getElementById("trades");
 const authErrorEl = document.getElementById("authError");
+const selectedBotEl = document.getElementById("selectedBot");
 
 const tabSignup = document.getElementById("tabSignup");
 const tabLogin = document.getElementById("tabLogin");
@@ -29,6 +31,28 @@ const submitBtn = document.getElementById("submitJob");
 const refreshBtn = document.getElementById("refreshJobs");
 const appShell = document.getElementById("appShell");
 const authOverlay = document.getElementById("authOverlay");
+const botGrid = document.getElementById("botGrid");
+const tickerSelect = document.getElementById("tickerSelect");
+const tickerCustom = document.getElementById("tickerCustom");
+
+const bots = [
+  { name: "The Alchemist", desc: "Blends features into a balanced concoction." },
+  { name: "The Oracle", desc: "Leans on probabilistic foresight." },
+  { name: "The Squire", desc: "A light scout for quick tests." },
+  { name: "The Knight", desc: "Steady and defensive posture." },
+  { name: "The Seer", desc: "Pattern spotter tuned to history." },
+  { name: "The Archivist", desc: "Dives deep into past data." },
+  { name: "The Ranger", desc: "Momentum-focused explorer." },
+  { name: "The Paladin", desc: "Rule-based, cautious entries." },
+  { name: "The Navigator", desc: "Regime-aware steering." },
+  { name: "The Arcanist", desc: "Ensembles multiple views." },
+];
+
+const topTickers = [
+  "AAPL","MSFT","AMZN","NVDA","GOOGL","GOOG","META","TSLA","BRK.B","UNH",
+  "JNJ","JPM","V","XOM","PG","MA","HD","CVX","PFE","AVGO",
+  "COST","PEP","KO","ABBV","NFLX","ADBE","CRM","AMD","INTC","WMT"
+];
 
 function setStatus(msg, type = "info") {
   statusEl.textContent = msg;
@@ -158,8 +182,15 @@ async function submitJob() {
     setStatus("Log in first.", "error");
     return;
   }
-  const tickersRaw = document.getElementById("tickers").value;
-  const tickers = tickersRaw.split(",").map((t) => t.trim()).filter(Boolean);
+  const sel = tickerSelect ? tickerSelect.value : "";
+  const custom = tickerCustom ? tickerCustom.value.trim() : "";
+  const tickers = [];
+  if (sel && sel !== "custom") tickers.push(sel);
+  if (sel === "custom" && custom) tickers.push(custom.toUpperCase());
+  if (!tickers.length) {
+    setStatus("Choose a ticker.", "error");
+    return;
+  }
   const start = document.getElementById("start").value;
   const end = document.getElementById("end").value;
   const task = document.getElementById("task").value;
@@ -271,7 +302,48 @@ function toggleAuthState(isAuthed) {
   }
 }
 
+function renderBots() {
+  if (!botGrid) return;
+  botGrid.innerHTML = "";
+  bots.forEach((b) => {
+    const card = document.createElement("div");
+    card.className = "bot-card";
+    card.innerHTML = `<div class="bot-name">${b.name}</div><div class="bot-desc">${b.desc}</div>`;
+    card.addEventListener("click", () => selectBot(b.name, card));
+    botGrid.appendChild(card);
+  });
+}
+
+function selectBot(name, cardEl) {
+  selectedBot = name;
+  if (selectedBotEl) selectedBotEl.textContent = `Selected: ${name}`;
+  Array.from(botGrid.children).forEach((c) => c.classList.remove("selected"));
+  if (cardEl) cardEl.classList.add("selected");
+  setStatus(`Selected ${name}. Adjust form and run when ready.`);
+}
+
+function renderTickers() {
+  if (!tickerSelect) return;
+  tickerSelect.innerHTML = "";
+  const defaultOpt = document.createElement("option");
+  defaultOpt.value = "";
+  defaultOpt.textContent = "Choose a ticker";
+  tickerSelect.appendChild(defaultOpt);
+  topTickers.forEach((t) => {
+    const opt = document.createElement("option");
+    opt.value = t;
+    opt.textContent = t;
+    tickerSelect.appendChild(opt);
+  });
+  const customOpt = document.createElement("option");
+  customOpt.value = "custom";
+  customOpt.textContent = "Custom...";
+  tickerSelect.appendChild(customOpt);
+}
+
 defaultDates();
 setToken(null, null);
 setStatus("Ready.");
 activateTab("signup");
+renderBots();
+renderTickers();

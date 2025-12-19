@@ -15,7 +15,6 @@ const authErrorEl = document.getElementById("authError");
 const selectedBotEl = document.getElementById("selectedBot");
 const testPanel = document.getElementById("testPanel");
 const backToPicker = document.getElementById("backToPicker");
-const backToPicker = document.getElementById("backToPicker");
 
 const tabSignup = document.getElementById("tabSignup");
 const tabLogin = document.getElementById("tabLogin");
@@ -303,6 +302,15 @@ function toggleAuthState(isAuthed) {
     refreshBtn.disabled = true;
     authGate.classList.remove("hidden");
   }
+}
+
+function backToEngines() {
+  if (testPanel) testPanel.classList.add("hidden");
+  selectedBot = null;
+  if (selectedBotEl) selectedBotEl.textContent = "None selected";
+  Array.from(botGrid.children).forEach((c) => c.classList.remove("selected"));
+  setStatus("Pick an engine to continue.");
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 function renderBots() {

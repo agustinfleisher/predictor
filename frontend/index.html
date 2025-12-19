@@ -5,8 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Stockpredictor</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="loading-overlay hidden">
+    <div class="loading-spinner"></div>
+    <p class="loading-text">Running backtest...</p>
+  </div>
+
   <div id="authOverlay" class="auth-overlay">
     <section class="card auth-card" id="authPanel">
       <div class="tabs">
@@ -31,6 +38,7 @@
         </div>
         <div class="actions">
           <button id="signup">Create account</button>
+          <button id="devLoginSignup" class="dev-btn">Dev Login (Skip Auth)</button>
         </div>
       </div>
 
@@ -45,6 +53,7 @@
         </div>
         <div class="actions">
           <button id="login">Log in</button>
+          <button id="devLogin" class="dev-btn">Dev Login (Skip Auth)</button>
         </div>
       </div>
 
@@ -53,7 +62,7 @@
           <label>Username or Email</label>
           <input id="fp_identifier" type="text" placeholder="yourname or you@example.com" />
         </div>
-        <p class="muted-text">We’ll email a reset token if the account exists.</p>
+        <p class="muted-text">We'll email a reset token if the account exists.</p>
         <div class="actions">
           <button id="forgot">Send reset</button>
         </div>
@@ -127,6 +136,7 @@
                 <option value="logistic">logistic</option>
                 <option value="gboost">gboost</option>
                 <option value="mlp">mlp</option>
+                <option value="linear">linear</option>
               </select>
             </div>
             <div class="form-row">
@@ -134,7 +144,14 @@
               <input id="horizon" type="number" value="1" min="1" />
             </div>
             <div class="form-row">
-              <label>Entry threshold</label>
+              <label class="with-tooltip">
+                Entry threshold
+                <span class="tooltip-icon" tabindex="0">?</span>
+                <span class="tooltip-text">
+                  <strong>Classification:</strong> Minimum confidence (0-1) to enter a trade. E.g., 0.1 means model must be ≥60% confident.<br><br>
+                  <strong>Regression:</strong> Minimum predicted return magnitude to trade. E.g., 0.07 means model must predict ≥7% move.
+                </span>
+              </label>
               <input id="entry_threshold" type="number" value="0.05" step="0.01" />
             </div>
           </div>
@@ -149,18 +166,21 @@
               <button id="refreshJobs" class="secondary" disabled>Refresh jobs</button>
             </div>
           </div>
-          <div class="results">
-            <div class="result-block">
-              <h3>Summary metrics</h3>
-              <pre id="summary"></pre>
+
+          <div class="results-grid">
+            <div class="result-block metrics-block">
+              <h3>Performance Metrics</h3>
+              <div id="metricsTable"></div>
             </div>
-            <div class="result-block">
-              <h3>Equity curve (first points)</h3>
-              <pre id="equity"></pre>
+
+            <div class="result-block chart-block">
+              <h3>Equity Curve</h3>
+              <canvas id="equityChart"></canvas>
             </div>
-            <div class="result-block">
-              <h3>Trades head</h3>
-              <pre id="trades"></pre>
+
+            <div class="result-block trades-block full-width">
+              <h3>Recent Trades</h3>
+              <div id="tradesTable" class="table-container"></div>
             </div>
           </div>
         </section>

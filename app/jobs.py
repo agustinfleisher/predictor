@@ -16,7 +16,7 @@ from .deps import get_current_user
 router = APIRouter(prefix="/jobs", tags=["jobs"])
 
 
-@router.post("/", response_model=Dict[str, str])
+@router.post("", response_model=Dict[str, str])
 def submit_job(
     payload: schemas.JobRequest,
     user=Depends(get_current_user),
@@ -36,7 +36,7 @@ def submit_job(
     return {"job_id": job_id}
 
 
-@router.get("/", response_model=list[schemas.JobStatus])
+@router.get("", response_model=list[schemas.JobStatus])
 def list_jobs(user=Depends(get_current_user), settings: Settings = Depends(get_settings)):
     jobs = []
     for row in storage.list_jobs(settings, user_id=user["id"], limit=20):

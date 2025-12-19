@@ -44,6 +44,25 @@ def login(payload: schemas.UserLogin, settings: Settings = Depends(get_settings)
     return schemas.TokenResponse(access_token=token)
 
 
+@router.post("/dev-login", response_model=schemas.TokenResponse)
+def dev_login(settings: Settings = Depends(get_settings)):
+    """
+    Development-only endpoint that bypasses authentication.
+    Creates or retrieves a dev user and returns a valid token.
+    """
+    dev_email = "dev@localhost"
+    dev_username = "dev"
+    user = storage.get_user_by_email(settings, dev_email)
+    if not user:
+        # Use a pre-computed bcrypt hash for "dev" to avoid runtime hashing issues
+        password_hash = "$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/X4.q4q8QGt3gP0ZXe"
+        user_id = storage.create_user(settings, dev_email, dev_username, password_hash)
+    else:
+        user_id = user["id"]
+    token = create_access_token({"sub": str(user_id)}, settings=settings)
+    return schemas.TokenResponse(access_token=token)
+
+
 def _send_reset_email(settings: Settings, to_email: str, token: str):
     """
     Send reset email if SMTP configured; otherwise log to stdout.

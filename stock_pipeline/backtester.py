@@ -85,7 +85,10 @@ class WalkForwardBacktester:
 
         trades = result.trades.copy()
         equity_curve = (1 + result.daily_returns).cumprod()
-        trades = trades.merge(equity_curve.rename("equity"), left_on="date", right_index=True, how="left")
+        if not trades.empty and "date" in trades.columns:
+            trades = trades.merge(equity_curve.rename("equity"), left_on="date", right_index=True, how="left")
+        else:
+            trades["equity"] = None
 
         fold_metrics, mean_metrics = self._fold_metrics(trades)
         summary = {

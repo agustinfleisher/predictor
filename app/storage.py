@@ -7,10 +7,18 @@ from __future__ import annotations
 import json
 import sqlite3
 from contextlib import contextmanager
-from datetime import datetime
+from datetime import date, datetime
 from typing import Any, Dict, Iterable, Optional
 
 from .config import Settings, resolve_db_path
+
+
+class DateTimeEncoder(json.JSONEncoder):
+    """JSON encoder that handles date and datetime objects."""
+    def default(self, obj):
+        if isinstance(obj, (date, datetime)):
+            return obj.isoformat()
+        return super().default(obj)
 
 
 def _now_iso() -> str:
@@ -128,7 +136,7 @@ def update_user_password(settings: Settings, user_id: int, password_hash: str) -
 
 
 def create_job(settings: Settings, job_id: str, user_id: int, request_json: dict) -> None:
-    payload = json.dumps(request_json)
+    payload = json.dumps(request_json, cls=DateTimeEncoder)
     now = _now_iso()
     with get_conn(settings) as conn:
         conn.execute(

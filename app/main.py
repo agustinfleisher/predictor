@@ -16,7 +16,7 @@ from .storage import init_db
 def create_app() -> FastAPI:
     settings = get_settings()
     init_db(settings)
-    app = FastAPI(title="stockpredictor API", version="0.1.0")
+    app = FastAPI(title="stockpredictor API", version="0.1.0", redirect_slashes=False)
 
     # Allow local frontends (file://, localhost) to call the API during development.
     app.add_middleware(

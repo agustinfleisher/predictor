@@ -10,6 +10,7 @@ const jobIdEl = document.getElementById("jobId");
 const summaryEl = document.getElementById("summary");
 const equityEl = document.getElementById("equity");
 const tradesEl = document.getElementById("trades");
+const authErrorEl = document.getElementById("authError");
 
 const tabSignup = document.getElementById("tabSignup");
 const tabLogin = document.getElementById("tabLogin");
@@ -32,6 +33,11 @@ const authOverlay = document.getElementById("authOverlay");
 function setStatus(msg, type = "info") {
   statusEl.textContent = msg;
   statusEl.style.color = type === "error" ? "#f87171" : "#4ade80";
+}
+
+function setAuthError(msg) {
+  if (!authErrorEl) return;
+  authErrorEl.textContent = msg || "";
 }
 
 function setToken(token, user = null) {
@@ -76,6 +82,7 @@ async function signup() {
   const password = document.getElementById("su_password").value;
   if (!username || !email || !password) {
     setStatus("Username, email, and password required.", "error");
+    setAuthError("Username, email, and password required.");
     return;
   }
   try {
@@ -85,8 +92,10 @@ async function signup() {
     });
     setToken(data.access_token, { username, email });
     setStatus("Signed up and logged in.");
+    setAuthError("");
   } catch (err) {
     setStatus(err.message, "error");
+    setAuthError(err.message);
   }
 }
 
@@ -95,6 +104,7 @@ async function login() {
   const password = document.getElementById("li_password").value;
   if (!identifier || !password) {
     setStatus("Username/email and password required.", "error");
+    setAuthError("Username/email and password required.");
     return;
   }
   try {
@@ -104,8 +114,10 @@ async function login() {
     });
     setToken(data.access_token, { username: identifier, email: identifier });
     setStatus("Logged in.");
+    setAuthError("");
   } catch (err) {
     setStatus(err.message, "error");
+    setAuthError(err.message);
   }
 }
 
@@ -113,6 +125,7 @@ async function forgotPassword() {
   const identifier = document.getElementById("fp_identifier").value.trim();
   if (!identifier) {
     setStatus("Username or email required.", "error");
+    setAuthError("Username or email required.");
     return;
   }
   try {
@@ -121,8 +134,10 @@ async function forgotPassword() {
       body: JSON.stringify({ identifier }),
     });
     setStatus("If the account exists, a reset token was sent.");
+    setAuthError("");
   } catch (err) {
     setStatus(err.message, "error");
+    setAuthError(err.message);
   }
 }
 

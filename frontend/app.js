@@ -13,6 +13,9 @@ const equityEl = document.getElementById("equity");
 const tradesEl = document.getElementById("trades");
 const authErrorEl = document.getElementById("authError");
 const selectedBotEl = document.getElementById("selectedBot");
+const testPanel = document.getElementById("testPanel");
+const backToPicker = document.getElementById("backToPicker");
+const backToPicker = document.getElementById("backToPicker");
 
 const tabSignup = document.getElementById("tabSignup");
 const tabLogin = document.getElementById("tabLogin");
@@ -36,16 +39,16 @@ const tickerSelect = document.getElementById("tickerSelect");
 const tickerCustom = document.getElementById("tickerCustom");
 
 const bots = [
-  { name: "Sir Aldric", desc: "Steady hand; favors balanced signals." },
-  { name: "Lady Isolde", desc: "Elegant probabilities and soft edges." },
-  { name: "Sir Rowan", desc: "Quick scout; light and responsive." },
-  { name: "Dame Elinor", desc: "Defensive stance; cautious entries." },
-  { name: "Sir Tristan", desc: "Pattern seeker steeped in lore." },
-  { name: "Scribe Cedric", desc: "Archivist of the past; deep recall." },
-  { name: "Ranger Gareth", desc: "Momentum hunter across the realm." },
-  { name: "Paladin Leofric", desc: "Rule-bound; careful conviction." },
-  { name: "Navigator Ysabel", desc: "Regime-aware course corrections." },
-  { name: "Arcanist Guinevere", desc: "Ensembles many voices into one." },
+  { name: "Nova", desc: "Mixed-model baseline for general conditions." },
+  { name: "Quanta", desc: "Probability-first engine for directional calls." },
+  { name: "Pulse", desc: "Lightweight, momentum-tilted scout." },
+  { name: "Aegis", desc: "Defensive, risk-aware entries with tighter screens." },
+  { name: "Sentinel", desc: "Pattern detector keyed to recurring regimes." },
+  { name: "Archive", desc: "History-heavy recall for mean-reverting signals." },
+  { name: "Vector", desc: "Momentum explorer with trend bias." },
+  { name: "Covenant", desc: "Rule-based, conservative entries; fewer trades." },
+  { name: "Helm", desc: "Regime-aware steering with volatility gating." },
+  { name: "Aurora", desc: "Ensembles multiple views for stability." },
 ];
 
 const topTickers = [
@@ -308,8 +311,7 @@ function renderBots() {
   bots.forEach((b) => {
     const card = document.createElement("div");
     card.className = "bot-card";
-    card.innerHTML = `<div class="bot-name">${b.name}</div>`;
-    card.title = b.desc;
+    card.innerHTML = `<div class="bot-name">${b.name}</div><div class="bot-desc">${b.desc}</div>`;
     card.addEventListener("click", () => selectBot(b.name, card));
     botGrid.appendChild(card);
   });
@@ -320,6 +322,10 @@ function selectBot(name, cardEl) {
   if (selectedBotEl) selectedBotEl.textContent = `Selected: ${name}`;
   Array.from(botGrid.children).forEach((c) => c.classList.remove("selected"));
   if (cardEl) cardEl.classList.add("selected");
+  if (testPanel) {
+    testPanel.classList.remove("hidden");
+    window.scrollTo({ top: testPanel.offsetTop - 40, behavior: "smooth" });
+  }
   setStatus(`Selected ${name}. Choose a ticker, set dates, and run.`);
 }
 
@@ -348,3 +354,4 @@ setStatus("Ready.");
 activateTab("signup");
 renderBots();
 renderTickers();
+if (backToPicker) backToPicker.addEventListener("click", backToEngines);

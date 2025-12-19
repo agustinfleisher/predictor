@@ -36,16 +36,16 @@ const tickerSelect = document.getElementById("tickerSelect");
 const tickerCustom = document.getElementById("tickerCustom");
 
 const bots = [
-  { name: "The Alchemist", desc: "Blends features into a balanced concoction." },
-  { name: "The Oracle", desc: "Leans on probabilistic foresight." },
-  { name: "The Squire", desc: "A light scout for quick tests." },
-  { name: "The Knight", desc: "Steady and defensive posture." },
-  { name: "The Seer", desc: "Pattern spotter tuned to history." },
-  { name: "The Archivist", desc: "Dives deep into past data." },
-  { name: "The Ranger", desc: "Momentum-focused explorer." },
-  { name: "The Paladin", desc: "Rule-based, cautious entries." },
-  { name: "The Navigator", desc: "Regime-aware steering." },
-  { name: "The Arcanist", desc: "Ensembles multiple views." },
+  { name: "Sir Aldric", desc: "Steady hand; favors balanced signals." },
+  { name: "Lady Isolde", desc: "Elegant probabilities and soft edges." },
+  { name: "Sir Rowan", desc: "Quick scout; light and responsive." },
+  { name: "Dame Elinor", desc: "Defensive stance; cautious entries." },
+  { name: "Sir Tristan", desc: "Pattern seeker steeped in lore." },
+  { name: "Scribe Cedric", desc: "Archivist of the past; deep recall." },
+  { name: "Ranger Gareth", desc: "Momentum hunter across the realm." },
+  { name: "Paladin Leofric", desc: "Rule-bound; careful conviction." },
+  { name: "Navigator Ysabel", desc: "Regime-aware course corrections." },
+  { name: "Arcanist Guinevere", desc: "Ensembles many voices into one." },
 ];
 
 const topTickers = [
@@ -308,7 +308,8 @@ function renderBots() {
   bots.forEach((b) => {
     const card = document.createElement("div");
     card.className = "bot-card";
-    card.innerHTML = `<div class="bot-name">${b.name}</div><div class="bot-desc">${b.desc}</div>`;
+    card.innerHTML = `<div class="bot-name">${b.name}</div>`;
+    card.title = b.desc;
     card.addEventListener("click", () => selectBot(b.name, card));
     botGrid.appendChild(card);
   });
@@ -319,7 +320,7 @@ function selectBot(name, cardEl) {
   if (selectedBotEl) selectedBotEl.textContent = `Selected: ${name}`;
   Array.from(botGrid.children).forEach((c) => c.classList.remove("selected"));
   if (cardEl) cardEl.classList.add("selected");
-  setStatus(`Selected ${name}. Adjust form and run when ready.`);
+  setStatus(`Selected ${name}. Choose a ticker, set dates, and run.`);
 }
 
 function renderTickers() {
